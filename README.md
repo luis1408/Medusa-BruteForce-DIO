@@ -24,31 +24,12 @@
 
 ---
 
-# 📖 Introdução
+# 📚 Tipos de Ataques (Anotações Teóricas das Aulas)
 
-Este projeto teve como objetivo simular técnicas de brute force, enumeração de usuários e exploração de vulnerabilidades utilizando ferramentas comuns em testes de segurança ofensiva.
-
-Os testes foram realizados em ambiente controlado utilizando:
-
-- Kali Linux
-- Metasploitable 2
-- Ferramentas de pentest
-- Máquinas virtuais em rede Host-Only
+> Esta seção reúne conceitos teóricos estudados durante as aulas do desafio da DIO.  
+> Nem todas as técnicas apresentadas foram utilizadas diretamente no laboratório prático.
 
 ---
-
-# 🎯 Objetivos
-
-- Realizar enumeração de serviços
-- Identificar vulnerabilidades conhecidas
-- Simular ataques de autenticação
-- Explorar serviços inseguros
-- Demonstrar riscos de senhas fracas
-- Validar acessos obtidos
-
----
-
-# 🔐 Tipos de Ataques
 
 ## Ataque de Dicionário
 
@@ -124,11 +105,11 @@ root@123
 
 ---
 
-# Password Spraying
+## Password Spraying
 
 Técnica que testa uma senha fraca contra vários usuários diferentes.
 
-## Objetivo
+### Objetivo
 
 Evitar:
 
@@ -149,11 +130,11 @@ user3
 
 ---
 
-# Credential Stuffing
+## Credential Stuffing
 
 Uso de credenciais vazadas em outros serviços.
 
-## Funcionamento
+### Funcionamento
 
 O atacante aproveita a reutilização de senhas entre diferentes plataformas.
 
@@ -167,7 +148,11 @@ Tentativa automática em outros serviços
 
 ---
 
-# 🛠 Ferramentas Utilizadas
+# 🛠 Ferramentas Citadas nas Aulas (Parte Teórica)
+
+> As ferramentas abaixo foram apresentadas durante as aulas como exemplos de ferramentas utilizadas em testes de autenticação, brute force e auditoria de segurança.
+>
+> Nem todas foram utilizadas diretamente no laboratório deste desafio.
 
 | Ferramenta | Finalidade |
 |---|---|
@@ -180,6 +165,21 @@ Tentativa automática em outros serviços
 | Ncrack | Ataques distribuídos |
 | WPScan | Auditoria WordPress |
 | Patator | Ataques customizados |
+
+---
+
+# 🧪 Ferramentas Utilizadas no Laboratório
+
+Durante a execução prática do desafio, foram utilizadas as seguintes ferramentas:
+
+| Ferramenta | Utilização no Projeto |
+|---|---|
+| Nmap | Enumeração de portas e serviços |
+| Metasploit | Exploração da vulnerabilidade do vsFTPd |
+| Medusa | Ataques de autenticação |
+| Hydra | Teste de brute force em formulário web |
+| Enum4Linux | Enumeração SMB |
+| FTP Client | Validação das credenciais obtidas |
 
 ---
 
